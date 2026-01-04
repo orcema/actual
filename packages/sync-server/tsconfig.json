@@ -4,6 +4,7 @@
     "lib": ["ES2021"],
     "noEmit": false,
     "outDir": "build",
+    "sourceMap": true
   },
   "include": [
     "src/**/*",
