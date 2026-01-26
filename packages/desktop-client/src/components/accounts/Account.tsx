@@ -1407,6 +1407,15 @@ class AccountInternal extends PureComponent<
     oldCondition: RuleConditionEntity,
     updatedCondition: RuleConditionEntity,
   ) => {
+    if (
+      updatedCondition.op === 'hasTags' &&
+      typeof updatedCondition.value === 'string'
+    ) {
+      const words = updatedCondition.value.trim().split(/\s+/).filter(Boolean);
+      updatedCondition.value = words
+        .map(word => (word.startsWith('#') ? word : '#' + word))
+        .join(' ');
+    }
     this.applyFilters(
       this.state.filterConditions.map(c =>
         c === oldCondition ? updatedCondition : c,
@@ -1442,6 +1451,16 @@ class AccountInternal extends PureComponent<
   };
 
   onApplyFilter = async (conditionOrSavedFilter: ConditionEntity) => {
+    if (
+      !isTransactionFilterEntity(conditionOrSavedFilter) &&
+      conditionOrSavedFilter.op === 'hasTags' &&
+      typeof conditionOrSavedFilter.value === 'string'
+    ) {
+      const words = conditionOrSavedFilter.value.trim().split(/\s+/).filter(Boolean);
+      conditionOrSavedFilter.value = words
+        .map(word => (word.startsWith('#') ? word : '#' + word))
+        .join(' ');
+    }
     let filterConditions = this.state.filterConditions;
 
     if (

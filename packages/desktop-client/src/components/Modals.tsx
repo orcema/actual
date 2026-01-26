@@ -55,6 +55,7 @@ import { MergeUnusedPayeesModal } from './modals/MergeUnusedPayeesModal';
 import { NewCategoryGroupModal } from './modals/NewCategoryGroupModal';
 import { NewCategoryModal } from './modals/NewCategoryModal';
 import { NotesModal } from './modals/NotesModal';
+import { NotesTagEditorModal } from './modals/NotesTagEditorModal';
 import { OpenIDEnableModal } from './modals/OpenIDEnableModal';
 import { OutOfSyncMigrationsModal } from './modals/OutOfSyncMigrationsModal';
 import { PasswordEnableModal } from './modals/PasswordEnableModal';
@@ -277,6 +278,9 @@ export function Modals() {
 
         case 'notes':
           return <NotesModal key={key} {...modal.options} />;
+
+        case 'notes-tag-editor':
+          return <NotesTagEditorModal key={key} {...modal.options} />;
 
         case 'envelope-balance-menu':
           return (

@@ -433,16 +433,6 @@ export function FilterButton<T extends RuleConditionEntity>({
       dispatch({ type: 'close' });
     }
   }
-
-  function onApplyFilter(cond: T) {
-    if (cond.op === 'hasTags' && typeof cond.value === 'string') {
-      const words = cond.value.trim().split(/\s+/).filter(Boolean);
-      cond.value = words
-        .map(word => (word.startsWith('#') ? word : '#' + word))
-        .join(' ');
-    }
-    onValidateAndApply(cond);
-  }
   useHotkeys('f', () => dispatch({ type: 'select-field' }), {
     scopes: ['app'],
   });
@@ -529,7 +519,7 @@ export function FilterButton<T extends RuleConditionEntity>({
             op={state.op}
             value={state.value}
             dispatch={dispatch}
-            onApply={onApplyFilter}
+            onApply={onValidateAndApply}
           />
         )}
       </Popover>
@@ -606,13 +596,6 @@ export function FilterEditor<T extends RuleConditionEntity>({
               return;
             }
           }
-        }
-
-        if (cond.op === 'hasTags' && typeof cond.value === 'string') {
-          const words = cond.value.trim().split(/\s+/).filter(Boolean);
-          cond.value = words
-            .map(word => (word.startsWith('#') ? word : '#' + word))
-            .join(' ');
         }
 
         onSave(cond);
