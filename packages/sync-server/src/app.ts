@@ -138,11 +138,48 @@ if (process.env.NODE_ENV === 'development') {
   // Imported within Dev block to allow dev dependency in package.json (reduces package size in production)
   const httpProxyMiddleware = await import('http-proxy-middleware');
 
+  // List of API routes that should NOT be proxied to React Dev Server
+  const apiRoutes = [
+    '/sync',
+    '/account',
+    '/gocardless',
+    '/simplefin',
+    '/pluggyai',
+    '/secret',
+    '/cors-proxy',
+    '/admin',
+    '/openid',
+    '/mode',
+    '/info',
+    '/health',
+    '/metrics',
+  ];
+
   app.use(
     httpProxyMiddleware.createProxyMiddleware({
       target: 'http://localhost:3001',
       changeOrigin: true,
       ws: true,
+      pathFilter: (pathname, req) => {
+        // Don't proxy API routes
+        for (const route of apiRoutes) {
+          if (pathname === route || pathname.startsWith(`${route}/`)) {
+            return false;
+          }
+        }
+        // Proxy everything else (frontend routes like /budget, /, etc.)
+        return true;
+      },
+      // Log proxy errors for debugging
+      on: {
+        error: (err, req, res) => {
+          console.error('Proxy error:', err.message);
+          console.error('Request path:', (req as any).path || req.url);
+          if (res && 'status' in res) {
+            (res as any).status(500).send('Proxy error: ' + err.message);
+          }
+        },
+      },
     }),
   );
 } else {
